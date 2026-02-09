@@ -78,6 +78,13 @@ export default defineType({
       hidden: ({ document }) => document?.type !== 'image',
     }),
     defineField({
+  name: 'trackingEnabled',
+  title: 'Enable Internal Tracking',
+  type: 'boolean',
+  description: 'Turn ON to count views/clicks in Sanity. Turn OFF for affiliate links (save API quota).',
+  initialValue: true,
+}),
+    defineField({
       name: 'code',
       title: 'Custom HTML/JS',
       type: 'text',
