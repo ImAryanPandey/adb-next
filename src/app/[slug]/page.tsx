@@ -6,8 +6,9 @@ import { client } from '@/sanity/client';
 import { POST_QUERY, ACTIVE_ADS_QUERY } from '@/sanity/queries';
 import { urlFor } from '@/sanity/image';
 import { SanityContent } from '@/components/SanityContent';
-import { Post, AdUnit, SanityImage } from '@/types/sanity'; // Import SanityImage
+import { Post, AdUnit, SanityImage } from '@/types/sanity';
 import { PortableTextBlock } from 'next-sanity';
+import AdClient from '@/components/AdClient'; // 👈 Import the Client Wrapper
 
 interface SinglePost extends Omit<Post, 'categories' | 'body' | 'author'> {
   body: PortableTextBlock[]; 
@@ -113,24 +114,32 @@ export default async function PostPage({ params }: Props) {
         )}
 
         {/* --- AD SPOT: In-Content --- */}
-        {inContentAd && (
-          <div className="my-8 p-6 bg-gray-50 border border-dashed border-gray-200 rounded-lg text-center flex flex-col items-center">
-             <p className="text-xs text-gray-400 uppercase mb-2">Advertisement</p>
-             {inContentAd.image ? (
-                <div className="relative w-full h-32 md:h-48 max-w-lg">
-                  <Image 
-                     src={urlFor(inContentAd.image).url()}
-                     alt={inContentAd.title || 'Advertisement'}
-                     fill
-                     className="object-contain"
-                  />
-                  <a href={inContentAd.link || '#'} className="absolute inset-0" target="_blank" />
-                </div>
-             ) : (
-                <div className="font-mono text-sm text-gray-500">{inContentAd.title}</div>
-             )}
-          </div>
-        )}
+        {inContentAd ? (
+          <AdClient 
+             adId={inContentAd._id}
+             title={inContentAd.title}
+             placement="banner"
+             trackingEnabled={inContentAd.trackingEnabled !== false}
+          >
+            <div className="my-8 p-6 bg-gray-50 border border-dashed border-gray-200 rounded-lg text-center relative group">
+              <p className="text-xs text-gray-400 uppercase mb-2">Advertisement</p>
+              
+              {inContentAd.image ? (
+                  <div className="relative w-full h-32 md:h-48 max-w-lg mx-auto">
+                    <Image 
+                      src={urlFor(inContentAd.image).url()}
+                      alt={inContentAd.title || 'Advertisement'}
+                      fill
+                      className="object-contain"
+                    />
+                    <a href={inContentAd.link || '#'} className="absolute inset-0 z-20" target="_blank" />
+                  </div>
+              ) : (
+                  <div className="font-mono text-sm text-gray-500">{inContentAd.title}</div>
+              )}
+            </div>
+          </AdClient>
+        ) : null}
 
         {/* Main Content */}
         <div className="prose prose-lg prose-blue max-w-none text-gray-800">
@@ -145,32 +154,40 @@ export default async function PostPage({ params }: Props) {
       {/* RIGHT COLUMN: Sidebar */}
       <aside className="lg:col-span-4 space-y-8">
         <div className="sticky top-24">
-          <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm mb-8">
-             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-              Sponsored
-            </h3>
-            {sidebarAd ? (
-              <div className="group relative w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
-                {sidebarAd.image && (
-                  <Image
-                    src={urlFor(sidebarAd.image).width(400).height(400).url()}
-                    alt={sidebarAd.title || 'Advertisement'}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 400px"
-                  />
-                )}
-                <a href={sidebarAd.link || '#'} target="_blank" className="absolute inset-0 z-10" />
-                 <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
+          
+          {/* LOGIC: Only show if Ad Exists */}
+          {sidebarAd ? (
+            <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm mb-8">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+                Sponsored
+              </h3>
+              
+              <AdClient 
+                adId={sidebarAd._id} 
+                title={sidebarAd.title} 
+                placement="sidebar"
+                trackingEnabled={sidebarAd.trackingEnabled !== false}
+              >
+                <div className="group relative w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
+                  {sidebarAd.image && (
+                    <Image
+                      src={urlFor(sidebarAd.image).width(400).height(400).url()}
+                      alt={sidebarAd.title || 'Advertisement'}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  )}
+                  <a href={sidebarAd.link || '#'} target="_blank" className="absolute inset-0 z-10" />
+                  <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
                     <p className="text-white text-xs font-medium truncate">{sidebarAd.title}</p>
-                 </div>
-              </div>
-            ) : (
-              <div className="h-64 bg-gray-50 flex items-center justify-center text-gray-300">
-                Ad Space
-              </div>
-            )}
-          </div>
+                  </div>
+                </div>
+              </AdClient>
+
+            </div>
+          ) : null}
+
         </div>
       </aside>
     </div>

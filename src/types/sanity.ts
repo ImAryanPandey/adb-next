@@ -1,11 +1,6 @@
-// src/types/sanity.ts
+import { PortableTextBlock } from 'next-sanity';
 
 // --- BASE TYPES ---
-export interface SanityBody {
-  _type: 'block';
-  children: { _type: 'span'; text: string }[];
-}
-
 export interface SanityImage {
   _type: 'image';
   asset: {
@@ -17,8 +12,8 @@ export interface SanityImage {
 
 // --- SEO OBJECT (Reusable) ---
 export interface SeoMetadata {
-  metaTitle: string;
-  metaDescription: string;
+  metaTitle?: string;
+  metaDescription?: string;
   openGraphImage?: SanityImage;
 }
 
@@ -27,6 +22,7 @@ export interface Category {
   _id: string;
   title: string;
   slug: { current: string };
+  description?: string;
 }
 
 export interface Author {
@@ -42,9 +38,12 @@ export interface Post {
   slug: { current: string };
   mainImage?: SanityImage;
   excerpt?: string;
-  body: SanityBody[]; // Portable Text
+  
+  // ✅ UPGRADE: Using official type for Portable Text (Required for SanityContent component)
+  body: PortableTextBlock[]; 
+  
   author?: Author;
-  categories?: Category[]; // Array of categories
+  categories?: Category[];
   seo?: SeoMetadata;
 }
 
@@ -52,14 +51,20 @@ export interface Post {
 export interface AdUnit {
   _id: string;
   title: string;
-  // "placement" matches the schema I gave you (Sidebar/Banner)
-  placement: 'sidebar' | 'banner' | 'footer'; 
-  // "category" allows targeting (Matches the Post categories)
-  category: 'global' | 'tech' | 'lifestyle'; 
+  
+  // ✅ UPDATED: Kept your 'footer' + added 'popup' just in case
+  placement: 'sidebar' | 'banner' | 'footer' | 'popup'; 
+  
+  // ✅ UPDATED: relaxed to string to prevent errors if you add new categories in Studio
+  category: string; 
+  
   type: 'image' | 'code';
   image?: SanityImage;
   link?: string;   // Affiliate link
   code?: string;   // HTML/Script fallback
-  priority: number; // 1-10
+  priority: number; 
   active: boolean;
+  
+  // ✅ NEW FIELD: For Phase 4 Tracking Logic
+  trackingEnabled?: boolean; 
 }

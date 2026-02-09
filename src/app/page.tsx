@@ -4,6 +4,7 @@ import { client } from '@/sanity/client';
 import { POSTS_QUERY, ACTIVE_ADS_QUERY } from '@/sanity/queries';
 import { AdUnit, SanityImage } from '@/types/sanity';
 import { urlFor } from '@/sanity/image';
+import AdClient from '@/components/AdClient'; // 👈 Import the Client Wrapper
 
 export const revalidate = 60;
 
@@ -19,14 +20,9 @@ interface HomepagePost {
 
 export default async function HomePage() {
   const [posts, ads] = await Promise.all([
-    client.fetch<HomepagePost[]>(POSTS_QUERY), // Use specific type
+    client.fetch<HomepagePost[]>(POSTS_QUERY),
     client.fetch<AdUnit[]>(ACTIVE_ADS_QUERY)
   ]);
-
-  // 🔍 DEBUG: Look at your VS Code Terminal when you refresh the page
-  console.log("---------------- DEBUG ADS ----------------");
-  console.log("Raw Ads from Sanity:", JSON.stringify(ads, null, 2));
-  console.log("-------------------------------------------");
 
   // Logic: Find the first ad that matches 'sidebar'
   const sidebarAd = ads.find(ad => ad.placement === 'sidebar');
@@ -50,8 +46,8 @@ export default async function HomePage() {
                       src={urlFor(post.mainImage).width(800).height(600).url()}
                       alt={post.title}
                       fill
-                      priority={true} // ✅ FIX: Loads immediately (LCP optimized)
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // ✅ FIX: Tells browser how big the image is
+                      priority={true}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
@@ -59,7 +55,6 @@ export default async function HomePage() {
 
                 <div className="flex-1 space-y-3">
                   <div className="flex gap-2">
-                    {/* ✅ NO ANY: TypeScript now knows this is a string[] */}
                     {post.categories?.map((cat) => (
                       <span key={cat} className="text-xs font-bold text-blue-600 uppercase tracking-wider">
                         {cat}
@@ -84,49 +79,54 @@ export default async function HomePage() {
       </section>
 
       {/* RIGHT COLUMN: Sidebar */}
-      {/* RIGHT COLUMN: Sidebar */}
       <aside className="lg:col-span-4 space-y-8">
-        <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-            Sponsored
-          </h3>
-          {sidebarAd ? (
-            <div className="group relative w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
-              {/* 1. The Ad Image */}
-              {sidebarAd.image && (
-                <Image
-                  src={urlFor(sidebarAd.image).width(400).height(400).url()}
-                  alt={sidebarAd.title || 'Advertisement'}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                />
-              )}
+        
+        {/* LOGIC: Only render if ad exists. Else return null (hide box). */}
+        {sidebarAd ? (
+          <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+              Sponsored
+            </h3>
+            
+            {/* WRAPPER: The Client Logic */}
+            <AdClient 
+              adId={sidebarAd._id} 
+              title={sidebarAd.title} 
+              placement="sidebar"
+              // Default to true if the field is missing
+              trackingEnabled={sidebarAd.trackingEnabled !== false}
+            >
+              <div className="group relative w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
+                {sidebarAd.image && (
+                  <Image
+                    src={urlFor(sidebarAd.image).width(400).height(400).url()}
+                    alt={sidebarAd.title || 'Advertisement'}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                )}
+                <a
+                  href={sidebarAd.link || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 z-10"
+                  aria-label={`Visit ${sidebarAd.title}`}
+                >
+                  <span className="sr-only">Visit {sidebarAd.title}</span>
+                </a>
 
-              {/* 2. The Link Overlay (Clickable) */}
-              <a
-                href={sidebarAd.link || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 z-10"
-                aria-label={`Visit ${sidebarAd.title}`}
-              >
-                <span className="sr-only">Visit {sidebarAd.title}</span>
-              </a>
-
-              {/* 3. Small Badge */}
-              <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
-                <p className="text-white text-xs font-medium truncate">
-                  {sidebarAd.title}
-                </p>
+                {/* Badge */}
+                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
+                  <p className="text-white text-xs font-medium truncate">
+                    {sidebarAd.title}
+                  </p>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="h-64 bg-gray-50 rounded flex items-center justify-center text-gray-300 text-sm">
-              Ad Space (Empty)
-            </div>
-          )}
-        </div>
+            </AdClient>
+
+          </div>
+        ) : null}
       </aside>
 
     </div>
