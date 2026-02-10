@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-
+import { Geist, Geist_Mono } from "next/font/google"; // Keeping these as base sans
 import { Navbar } from "@/components/Navbar";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
@@ -33,18 +32,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
 
   title: {
-    default: "ADB - Agency Demo Build",
-    template: "%s | ADB",
+    default: "Infinite Trenz - Future Tech & Digital Culture",
+    template: "%s | Infinite Trenz",
   },
 
   description:
-    "A high-performance, SEO-optimized content platform built with Next.js 16 and Sanity.",
+    "Navigating the future of technology, digital culture, and modern finance. Deep dives into what's next.",
 
   openGraph: {
-    title: "ADB - Agency Demo Build",
-    description: "Scalable content architecture for modern agencies.",
+    title: "Infinite Trenz",
+    description: "Navigating the future of technology and culture.",
     url: baseUrl,
-    siteName: "ADB Agency Platform",
+    siteName: "Infinite Trenz",
     locale: "en_US",
     type: "website",
     images: [
@@ -52,27 +51,20 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "ADB Platform Preview",
+        alt: "Infinite Trenz Preview",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "ADB - Agency Demo Build",
-    creator: "@youragency",
+    title: "Infinite Trenz",
+    creator: "@infinitetrenz",
   },
 
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 };
 
@@ -87,15 +79,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white text-gray-900`}
       >
-        {/* ✅ GA4 (client-safe, self-guarded) */}
         <GoogleAnalytics />
-
-        {/* ✅ Async Server Component */}
         <Navbar />
-
-        <main className="flex-1 bg-gray-50/50">{children}</main>
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );
