@@ -50,3 +50,9 @@ export const CATEGORY_PAGE_QUERY = groq`*[_type == "category" && slug.current ==
     "categories": categories[]->title
   }
 }`;
+
+// 5. Get ALL Post Slugs (For Static Paths)
+export const ALL_POSTS_SLUGS_QUERY = groq`*[_type == "post" && defined(slug.current)][].slug.current`;
+
+// 6. Get ALL Category Slugs (For Static Paths)
+export const ALL_CATEGORIES_SLUGS_QUERY = groq`*[_type == "category" && defined(slug.current)][].slug.current`;

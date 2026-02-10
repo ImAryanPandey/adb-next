@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { client } from '@/sanity/client';
-import { POST_QUERY, ACTIVE_ADS_QUERY } from '@/sanity/queries';
+import { POST_QUERY, ACTIVE_ADS_QUERY, ALL_POSTS_SLUGS_QUERY } from '@/sanity/queries';
 import { urlFor } from '@/sanity/image';
 import { SanityContent } from '@/components/SanityContent';
 import { Post, AdUnit, SanityImage } from '@/types/sanity';
@@ -20,6 +20,15 @@ interface SinglePost extends Omit<Post, 'categories' | 'body' | 'author'> {
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+// Generate Static Params (The Fix)
+export async function generateStaticParams() {
+  const slugs = await client.fetch<string[]>(ALL_POSTS_SLUGS_QUERY);
+
+  return slugs.map((slug) => ({
+    slug: slug,
+  }));
+}
 
 // 2. SEO Metadata Generator
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

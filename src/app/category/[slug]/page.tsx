@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { client } from '@/sanity/client';
-import { CATEGORY_PAGE_QUERY, ACTIVE_ADS_QUERY } from '@/sanity/queries';
+import { CATEGORY_PAGE_QUERY, ACTIVE_ADS_QUERY, ALL_CATEGORIES_SLUGS_QUERY } from '@/sanity/queries';
 import { urlFor } from '@/sanity/image';
 import { AdUnit, SanityImage } from '@/types/sanity';
 
@@ -28,6 +28,16 @@ interface CategoryData {
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+
+// Generate Static Params (The Fix)
+export async function generateStaticParams() {
+  const slugs = await client.fetch<string[]>(ALL_CATEGORIES_SLUGS_QUERY);
+
+  return slugs.map((slug) => ({
+    slug: slug,
+  }));
+}
 
 // --- METADATA ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
