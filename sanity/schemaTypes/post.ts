@@ -18,6 +18,15 @@ export default defineType({
       options: { source: 'title' },
       validation: (rule) => rule.required(),
     }),
+
+    defineField({
+      name: 'excerpt',
+      title: 'Excerpt (Short Summary)',
+      type: 'text', // 'text' is for multi-line strings
+      rows: 3,
+      validation: (rule) => rule.max(200).warning('Keep excerpts short!'),
+    }),
+    
     defineField({
       name: 'mainImage',
       title: 'Main Image',
