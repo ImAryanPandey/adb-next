@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 import "./globals.css";
+import { Footer } from "@/components/Footer";
 
 /* ===============================
    Fonts
@@ -92,6 +93,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <Navbar />
         <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
