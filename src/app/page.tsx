@@ -165,7 +165,7 @@ export default async function HomePage() {
              </p>
           </div>
 
-          {/* Ad Block */}
+{/* Ad Block */}
           {sidebarAd && (
             <div className="border border-gray-100 bg-white">
               <div className="p-2 border-b border-gray-50 flex justify-between items-center">
@@ -177,7 +177,7 @@ export default async function HomePage() {
                 placement="sidebar"
                 trackingEnabled={sidebarAd.trackingEnabled !== false}
               >
-                <div className="group relative w-full aspect-square bg-gray-100 overflow-hidden">
+                <div className="group relative w-full aspect-square bg-gray-50 overflow-hidden">
                   {sidebarAd.image && (
                     <Image
                       src={urlFor(sidebarAd.image).width(400).height(400).url()}
@@ -186,8 +186,16 @@ export default async function HomePage() {
                       className="object-cover"
                     />
                   )}
-                  {/* Minimalist Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-white/95 p-3 border-t border-gray-100 backdrop-blur-sm">
+                  {/* ✅ FIX 1: Ensure Link has high z-index and covers everything */}
+                  <a 
+                    href={sidebarAd.link || '#'} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="absolute inset-0 z-20" 
+                  />
+                  
+                  {/* ✅ FIX 2: Add 'pointer-events-none' so clicks pass through this text layer */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-white/95 p-3 border-t border-gray-100 backdrop-blur-sm z-10 pointer-events-none">
                     <p className="text-gray-900 text-xs font-bold truncate font-serif">{sidebarAd.title}</p>
                     <p className="text-blue-600 text-[10px] uppercase tracking-wider">Learn More &rarr;</p>
                   </div>

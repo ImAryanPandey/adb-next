@@ -70,7 +70,7 @@ export default function AdClient({
   };
 
   return (
-    <div ref={ref} onClick={handleClick} className="relative w-full h-full cursor-pointer">
+    <div ref={ref} onClick={handleClick} className="relative w-full h-auto cursor-pointer">
       {children}
     </div>
   );
