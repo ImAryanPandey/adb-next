@@ -27,7 +27,7 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0] {
 export const ACTIVE_ADS_QUERY = groq`*[_type == "ad" && active == true] | order(priority desc) {
   _id,
   placement,
-  category, 
+  "categories": categories[]->slug.current,
   type,
   image,
   link,

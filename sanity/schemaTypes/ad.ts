@@ -38,20 +38,14 @@ export default defineType({
       },
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'category',
-      title: 'Target Category',
-      type: 'string',
-      description: 'Which content category triggers this ad?',
-      options: {
-        list: [
-          { title: 'Global (All)', value: 'global' },
-          { title: 'Tech', value: 'tech' },
-          { title: 'Lifestyle', value: 'lifestyle' },
-        ],
-      },
-      initialValue: 'global',
-    }),
+defineField({
+  name: 'categories',
+  title: 'Target Categories',
+  type: 'array', 
+  of: [{ type: 'reference', to: [{ type: 'category' }] }], 
+  description: 'Select multiple categories for targeting. Leave empty for "Global" ads.',
+}),
+
     defineField({
       name: 'type',
       title: 'Ad Type',

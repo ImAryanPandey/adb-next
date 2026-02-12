@@ -52,11 +52,9 @@ export interface AdUnit {
   _id: string;
   title: string;
   
-  // ✅ UPDATED: Kept your 'footer' + added 'popup' just in case
   placement: 'sidebar' | 'banner' | 'footer' | 'popup'; 
   
-  // ✅ UPDATED: relaxed to string to prevent errors if you add new categories in Studio
-  category: string; 
+  categories?: string[];
   
   type: 'image' | 'code';
   image?: SanityImage;
