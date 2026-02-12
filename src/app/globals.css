@@ -2,24 +2,26 @@
 @plugin "@tailwindcss/typography";
 
 :root {
+  /* Strict Magazine Theme (Paper White) */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111827; /* Gray-900 */
 }
 
 @theme {
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-playfair);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Authority Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif), serif;
+  font-weight: 700;
+  letter-spacing: -0.025em; /* Tight tracking for headers */
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google"; // Keeping these as base sans
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google"; // ✅ Fonts
 import { Navbar } from "@/components/Navbar";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
@@ -18,6 +18,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ The Magazine Font (Added this back)
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 /* ===============================
    Base URL (SEO / Social)
 ================================ */
@@ -26,7 +33,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
   : "http://localhost:3000";
 
 /* ===============================
-   Metadata
+   Metadata (Restored Full SEO)
 ================================ */
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -79,7 +86,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white text-gray-900`}
+        // ✅ Combined All Fonts + Antialiased
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased min-h-screen flex flex-col bg-white text-gray-900`}
       >
         <GoogleAnalytics />
         <Navbar />
