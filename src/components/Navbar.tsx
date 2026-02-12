@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { client } from '@/sanity/client';
 import { groq } from 'next-sanity';
 import { Category } from '@/types/sanity';
+import MobileMenu from '@/components/MobileMenu'; // ✅ Import the Client Component
 
-const CATEGORIES_QUERY = groq`*[_type == "category"] | order(title asc) {
+const CATEGORIES_QUERY = groq`*[_type == "category" && defined(slug.current)] | order(title asc) {
   _id,
   title,
   slug
@@ -17,37 +18,42 @@ export async function Navbar() {
     console.error("Sanity Fetch Failed:", error);
   }
 
-  // Fallback for visual testing if Sanity is down
+  // Fallback
   if (categories.length === 0) {
      categories = [
-       { _id: '1', title: 'Future Tech', slug: { current: 'future-tech' } },
-       { _id: '2', title: 'Digital Culture', slug: { current: 'digital-culture' } },
-       { _id: '3', title: 'Money Moves', slug: { current: 'money-moves' } },
-     ] as Category[];
+       { _id: '1', title: 'Tech', slug: { current: 'tech' } },
+       { _id: '2', title: 'Lifestyle', slug: { current: 'lifestyle' } },
+     ] as unknown as Category[];
   }
 
   return (
     <header className="border-b border-gray-100 bg-white/90 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-        {/* LOGO: Serif & Bold */}
-        <Link href="/" className="group flex flex-col items-start">
+        
+        {/* LOGO */}
+        <Link href="/" className="group flex flex-col items-start z-50">
           <span className="font-serif text-3xl font-black tracking-tighter text-gray-900">
             Infinite Trenz<span className="text-blue-600">.</span>
           </span>
         </Link>
 
-        {/* Desktop Nav */}
+        {/* DESKTOP NAV (Hidden on Mobile) */}
         <nav className="hidden md:flex gap-8">
           {categories.slice(0, 5).map((cat) => (
             <Link 
               key={cat._id} 
-              href={cat.slug?.current ? `/category/${cat.slug.current}` : '#'}
+              href={`/category/${cat.slug.current}`}
               className="text-xs font-bold text-gray-500 hover:text-blue-600 uppercase tracking-widest transition-colors"
             >
               {cat.title}
             </Link>
           ))}
         </nav>
+
+        {/* MOBILE NAV (Hamburger - Visible on Mobile) */}
+        {/* We pass the categories from the Server to the Client component here */}
+        <MobileMenu categories={categories} />
+
       </div>
     </header>
   );
