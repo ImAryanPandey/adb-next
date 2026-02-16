@@ -9,5 +9,5 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // False for fresh data during dev/pitch
+  useCdn: true, // False for fresh data during dev/pitch
 });
