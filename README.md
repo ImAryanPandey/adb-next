@@ -37,6 +37,7 @@ Add the following values found in `src/sanity/client.ts`:
 # Found in src/sanity/client.ts
 NEXT_PUBLIC_SANITY_PROJECT_ID=-----
 NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_GA_MEASUREMENT_ID=YOUR_GA_ID_HERE
 ```
 
 ---
