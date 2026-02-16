@@ -160,9 +160,15 @@ function createBodyBlocks(lines: string[]) {
 }
 
 async function cleanSlate() {
-  console.log('🧹 Cleaning Slate...')
-  await client.delete({query: '*[_type in ["post", "category"]]'})
-  console.log('✨ Old data cleared.')
+
+  if (process.env.ALLOW_CONTENT_DELETE !== 'true') {
+    console.log('⚠️ Skipping cleanSlate. Set ALLOW_CONTENT_DELETE=true to wipe data.');
+    return;
+  }
+  
+  console.log('🧹 Cleaning Slate...');
+  await client.delete({query: '*[_type in ["post", "category"]]'});
+  console.log('✨ Old data cleared.');
 }
 
 async function seed() {
