@@ -7,8 +7,8 @@ export default defineConfig({
   name: 'default',
   title: 'adb',
 
-  projectId: 'u6rlnrny',
-  dataset: 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
   plugins: [structureTool(), visionTool()],
 
