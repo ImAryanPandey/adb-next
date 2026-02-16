@@ -35,7 +35,7 @@ Add the following values found in `src/sanity/client.ts`:
 
 ```env
 # Found in src/sanity/client.ts
-NEXT_PUBLIC_SANITY_PROJECT_ID=u6rlnrny
+NEXT_PUBLIC_SANITY_PROJECT_ID=-----
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
